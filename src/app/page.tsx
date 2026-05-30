@@ -102,34 +102,26 @@ function FeedCard({ card, isEgg }: { card: typeof FEED_CARDS[0]; isEgg: boolean 
 }
 
 // ─── 加載頁（Feed 輪播）───────────────────────────────────
+type SlotItem = { card: typeof FEED_CARDS[0]; uid: number }
+
 function LoadingPage({
   cards, isEgg, visible, onDone, duration,
 }: {
   cards: typeof FEED_CARDS; isEgg: boolean;
   visible: boolean; onDone: () => void; duration: number;
 }) {
-  const [cardIdx, setCardIdx] = useState(0)
-  const [prev, setPrev] = useState<number | null>(null)
-  const [animating, setAnimating] = useState(false)
-  const cardIdxRef = useRef(0)
+  const [slots, setSlots] = useState<SlotItem[]>([{ card: cards[0], uid: 0 }])
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null)
   const doneRef = useRef<ReturnType<typeof setTimeout> | null>(null)
-
-  useEffect(() => { cardIdxRef.current = cardIdx }, [cardIdx])
+  const idxRef = useRef(0)
+  const uidRef = useRef(1)
 
   useEffect(() => {
-    if (!visible) { setCardIdx(0); setPrev(null); setAnimating(false); cardIdxRef.current = 0; return }
+    if (!visible) { setSlots([{ card: cards[0], uid: 0 }]); idxRef.current = 0; uidRef.current = 1; return }
     timerRef.current = setInterval(() => {
-      const current = cardIdxRef.current
-      setPrev(current)
-      setCardIdx((i) => (i + 1) % cards.length)
-      // 等新卡片先渲染在 translateY(100%)，下一幀再啟動滑動
-      requestAnimationFrame(() => {
-        requestAnimationFrame(() => {
-          setAnimating(true)
-          setTimeout(() => { setPrev(null); setAnimating(false) }, 450)
-        })
-      })
+      idxRef.current = (idxRef.current + 1) % cards.length
+      const next: SlotItem = { card: cards[idxRef.current], uid: uidRef.current++ }
+      setSlots(prev => [prev[prev.length - 1], next])
     }, 900)
     doneRef.current = setTimeout(() => { onDone() }, duration)
     return () => {
@@ -141,14 +133,11 @@ function LoadingPage({
 
   return (
     <div className="feed-viewport">
-      {prev !== null && (
-        <div style={{ position: 'absolute', inset: 0, transition: 'transform 0.42s cubic-bezier(0.4,0,0.2,1)', transform: animating ? 'translateY(-100%)' : 'translateY(0%)' }}>
-          <FeedCard card={cards[prev]} isEgg={isEgg} />
+      {slots.map((item, i) => (
+        <div key={item.uid} style={{ position: 'absolute', inset: 0, animation: i === slots.length - 1 && slots.length > 1 ? 'feedSlideIn 0.42s cubic-bezier(0.4,0,0.2,1) forwards' : i < slots.length - 1 ? 'feedSlideOut 0.42s cubic-bezier(0.4,0,0.2,1) forwards' : 'none' }}>
+          <FeedCard card={item.card} isEgg={isEgg} />
         </div>
-      )}
-      <div style={{ position: 'absolute', inset: 0, transition: animating ? 'transform 0.42s cubic-bezier(0.4,0,0.2,1)' : 'none', transform: animating ? 'translateY(0%)' : 'translateY(100%)' }}>
-        <FeedCard card={cards[cardIdx]} isEgg={isEgg} />
-      </div>
+      ))}
     </div>
   )
 }
@@ -318,32 +307,36 @@ export default function Home() {
 
         {/* ── 彩蛋頁 ── */}
         <div className="page page-egg" style={{ transform: step === 9 ? 'translateY(0%)' : 'translateY(100%)' }}>
-          <div className="egg-bg" style={{ backgroundImage: 'url(/bg_egg.png)' }} />
-          <div className="egg-bg-overlay" />
-          <div className="egg-goldflare" />
-          {step === 9 && <EggStars />}
-          <div className="tk-top egg-ui-delay">
-            <span>關注中</span><span className="on">為您推薦</span>
-          </div>
-          <div className="egg-content-wrap">
-            <div className="egg-content">
-              <div className="egg-crown">🍌</div>
-              <p style={{ fontSize: 11, color: '#facc15', fontWeight: 800, letterSpacing: 3, textShadow: '0 0 10px #facc15' }}>— 隱藏彩蛋解鎖 —</p>
-              <p className="egg-name">黃金香蕉女<br />Bananita Gold</p>
-              <span className="egg-badge">✨ 傳說級角色 ✨</span>
-              <p style={{ fontSize: 12, color: 'rgba(255,220,100,0.9)', lineHeight: 1.7, maxWidth: 250, marginTop: 6, textShadow: '0 1px 4px rgba(0,0,0,0.8)' }}>
-                其實沒什麼重要的，但我就是想加個彩蛋進去，就這樣。
-              </p>
-              <p style={{ fontSize: 20, marginTop: 4 }}>👑 恭喜你找到彩蛋啾咪 👑</p>
-              <button className="btn-egg-home" onClick={handleReset}>回到首頁</button>
-            </div>
-          </div>
-          <div className="egg-ui-delay">
-            <TkSideBar hearts="???" comments="???" stars="???" />
-          </div>
-          <div className="egg-ui-delay">
-            <TkBottomBar handle="@bananita_gold" desc="你是少數找到我的人。這是命中注定。" tags="#BananitaGold #隱藏彩蛋 #FruitIsland" handleColor="#facc15" />
-          </div>
+          {step === 9 && (
+            <>
+              <div className="egg-bg" style={{ backgroundImage: 'url(/bg_egg.png)' }} />
+              <div className="egg-bg-overlay" />
+              <div className="egg-goldflare" />
+              <EggStars />
+              <div className="tk-top egg-ui-delay">
+                <span>關注中</span><span className="on">為您推薦</span>
+              </div>
+              <div className="egg-content-wrap">
+                <div className="egg-content">
+                  <div className="egg-crown">🍌</div>
+                  <p style={{ fontSize: 11, color: '#facc15', fontWeight: 800, letterSpacing: 3, textShadow: '0 0 10px #facc15' }}>— 隱藏彩蛋解鎖 —</p>
+                  <p className="egg-name">黃金香蕉女<br />Bananita Gold</p>
+                  <span className="egg-badge">✨ 傳說級角色 ✨</span>
+                  <p style={{ fontSize: 12, color: 'rgba(255,220,100,0.9)', lineHeight: 1.7, maxWidth: 250, marginTop: 6, textShadow: '0 1px 4px rgba(0,0,0,0.8)' }}>
+                    其實沒什麼重要的，但我就是想加個彩蛋進去，就這樣。
+                  </p>
+                  <p style={{ fontSize: 20, marginTop: 4 }}>👑 恭喜你找到彩蛋啾咪 👑</p>
+                  <button className="btn-egg-home" onClick={handleReset}>回到首頁</button>
+                </div>
+              </div>
+              <div className="egg-ui-delay">
+                <TkSideBar hearts="???" comments="???" stars="???" />
+              </div>
+              <div className="egg-ui-delay">
+                <TkBottomBar handle="@bananita_gold" desc="你是少數找到我的人。這是命中注定。" tags="#BananitaGold #隱藏彩蛋 #FruitIsland" handleColor="#facc15" />
+              </div>
+            </>
+          )}
         </div>
 
       </div>
