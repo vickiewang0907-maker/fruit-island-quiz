@@ -9,6 +9,10 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="zh-TW">
+      <head>
+        <link rel="preload" as="image" href="/bg_egg.png" />
+        <link rel="preload" as="image" href="/bg_home.png" />
+      </head>
       <body>{children}</body>
     </html>
   )
