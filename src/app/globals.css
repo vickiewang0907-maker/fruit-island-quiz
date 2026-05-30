@@ -57,8 +57,18 @@ html, body {
   font-size: 13px; font-weight: 700; letter-spacing: 1px;
   padding: 18px 0 10px; flex-shrink: 0;
   position: relative; z-index: 2;
+  align-items: center;
 }
 .tk-top .on { border-bottom: 2px solid #fe2c55; padding-bottom: 3px; }
+
+.tk-lang { position: absolute; right: 14px; top: 50%; transform: translateY(-50%); }
+.lang-toggle {
+  background: none; border: none; cursor: pointer;
+  display: flex; align-items: center; gap: 4px;
+  font-size: 11px; font-weight: 800; color: rgba(255,255,255,0.5); letter-spacing: 1px;
+}
+.lang-active { color: #fff; }
+.lang-sep { color: rgba(255,255,255,0.3); }
 
 .tk-side {
   position: absolute; right: 10px; bottom: 110px;

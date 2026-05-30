@@ -1,6 +1,7 @@
 import { create } from 'zustand'
 
 export type FruitKey = 'Strawberina' | 'Bananito' | 'Aubergino' | 'Passiona' | 'Watermelonito' | 'Appelina'
+export type Lang = 'zh' | 'en'
 
 export interface Option {
   text: string
@@ -16,7 +17,7 @@ export interface Question {
   options: Option[]
 }
 
-const questionData: Question[] = [
+const zhQuestionData: Question[] = [
   {
     title: '你發現一則你中獎參加戀愛實境秀的簡訊，你會怎麼想？',
     bgKey: 'q1', handle: '@vickie_fruit_island',
@@ -28,7 +29,7 @@ const questionData: Question[] = [
     ],
   },
   {
-    title: '你在整理實境秀行李時，一定會帶上什麼？',
+    title: '你在整理要去戀愛島的行李時，一定會帶上什麼？',
     bgKey: 'q2', handle: '@vickie_fruit_island',
     desc: '行李透露你的本性 👀', tags: '#FruitIsland #行李 #水果性格',
     options: [
@@ -82,6 +83,77 @@ const questionData: Question[] = [
   },
 ]
 
+const enQuestionData: Question[] = [
+  {
+    title: 'you just got a text saying you won a spot on a dating reality show',
+    bgKey: 'q1', handle: '@vickie_fruit_island',
+    desc: 'first reaction. go.', tags: '#FruitIsland #AIFruit #datingshow',
+    options: [
+      { text: 'A. bro thought they could scam me 💀 (blocked)', scores: { Watermelonito: 1, Passiona: 1 } },
+      { text: 'B. omg I am SO winning this whole thing', scores: { Strawberina: 1, Aubergino: 1 } },
+      { text: 'C. wait do I actually have to go?? 😭', scores: { Bananito: 1, Appelina: 1 } },
+    ],
+  },
+  {
+    title: "packing your bags for love island. what's making the cut",
+    bgKey: 'q2', handle: '@vickie_fruit_island',
+    desc: 'your bag says everything 👀', tags: '#FruitIsland #packing #fruitvibes',
+    options: [
+      { text: 'A. Chanel perfume bc I came here to conquer', scores: { Strawberina: 1, Aubergino: 1, Passiona: 1 } },
+      { text: "B. my snacks. that's it. that's the bag.", scores: { Bananito: 1, Watermelonito: 1 } },
+      { text: 'C. a full skincare routine like a normal person', scores: { Appelina: 1 } },
+    ],
+  },
+  {
+    title: 'pick your fruit alter ego',
+    bgKey: 'q3', handle: '@vickie_fruit_island',
+    desc: 'no going back after this 🍓🍌🍆', tags: '#AIFruit #fruitquiz #chooseyourside',
+    options: [
+      { text: 'A. the apple girl (pure, naive, first to get hurt)', scores: { Appelina: 2 } },
+      { text: "B. the watermelon guy (everyone's bestie, no one's priority)", scores: { Watermelonito: 2 } },
+      { text: 'C. the banana guy (always one episode behind)', scores: { Bananito: 2 } },
+      { text: 'D. the strawberry girl (unhinged but make it cute)', scores: { Strawberina: 2 } },
+      { text: 'E. the eggplant guy (certified menace to society)', scores: { Aubergino: 2 } },
+      { text: 'F. the passion fruit girl (3 steps ahead and she knows it)', scores: { Passiona: 2 } },
+    ],
+  },
+  {
+    title: 'bonfire night. someone asks why you signed up',
+    bgKey: 'q4', handle: '@vickie_fruit_island',
+    desc: 'your answer reveals everything', tags: '#bonfire #FruitIsland #motive',
+    options: [
+      { text: 'A. bro I literally got randomly selected?? wild', scores: { Watermelonito: 1, Bananito: 1 } },
+      { text: 'B. I just want to find my person okay 🥺', scores: { Appelina: 1, Strawberina: 1 } },
+      { text: 'C. vibes. just vibes.', scores: { Aubergino: 1, Passiona: 1 } },
+    ],
+  },
+  {
+    title: 'your crush is also being pursued by your least favourite person',
+    bgKey: 'q5', handle: '@vickie_fruit_island',
+    desc: "game on. what's your move 👀", tags: '#drama #FruitIsland #strategy',
+    options: [
+      { text: 'A. may the best person win I guess (I will win)', scores: { Strawberina: 1, Bananito: 1, Appelina: 1 } },
+      { text: 'B. why solve the problem when you can remove the problem', scores: { Aubergino: 1, Passiona: 1 } },
+      { text: "C. next. there's always someone better.", scores: { Watermelonito: 1 } },
+    ],
+  },
+  {
+    title: "he picked you. turns out he's been taken this whole time",
+    bgKey: 'q6', handle: '@vickie_fruit_island',
+    desc: 'final episode. how does it end?', tags: '#betrayal #FruitIsland #drama',
+    options: [
+      { text: 'A. crying in the group chat rn', scores: { Bananito: 1, Watermelonito: 1, Appelina: 1 } },
+      { text: 'B. plot twist: me and his partner team up', scores: { Passiona: 1 } },
+      { text: 'C. slapped him on national TV no regrets', scores: { Strawberina: 1, Aubergino: 1 } },
+    ],
+  },
+]
+
+export const questionData: Record<Lang, Question[]> = {
+  zh: zhQuestionData,
+  en: enQuestionData,
+}
+
 const initialScores: Record<FruitKey, number> = {
   Strawberina: 0, Bananito: 0, Aubergino: 0,
   Passiona: 0, Watermelonito: 0, Appelina: 0,
@@ -90,13 +162,17 @@ const initialScores: Record<FruitKey, number> = {
 interface PsyStore {
   scores: Record<FruitKey, number>
   quizData: Question[]
+  lang: Lang
+  setLang: (lang: Lang) => void
   addScores: (fruitScores: Partial<Record<FruitKey, number>>) => void
   resetGame: () => void
 }
 
 export const usePsyStore = create<PsyStore>((set) => ({
   scores: { ...initialScores },
-  quizData: questionData,
+  quizData: zhQuestionData,
+  lang: 'zh',
+  setLang: (lang) => set({ lang, quizData: questionData[lang] }),
   addScores: (fruitScores) =>
     set((state) => {
       const newScores = { ...state.scores }
