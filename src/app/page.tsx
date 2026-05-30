@@ -111,16 +111,25 @@ function LoadingPage({
   const [cardIdx, setCardIdx] = useState(0)
   const [prev, setPrev] = useState<number | null>(null)
   const [animating, setAnimating] = useState(false)
+  const cardIdxRef = useRef(0)
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null)
   const doneRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
+  useEffect(() => { cardIdxRef.current = cardIdx }, [cardIdx])
+
   useEffect(() => {
-    if (!visible) { setCardIdx(0); setPrev(null); return }
+    if (!visible) { setCardIdx(0); setPrev(null); setAnimating(false); cardIdxRef.current = 0; return }
     timerRef.current = setInterval(() => {
-      setAnimating(true)
-      setPrev(cardIdx)
-      setCardIdx(i => (i + 1) % cards.length)
-      setTimeout(() => { setPrev(null); setAnimating(false) }, 450)
+      const current = cardIdxRef.current
+      setPrev(current)
+      setCardIdx((i) => (i + 1) % cards.length)
+      // 等新卡片先渲染在 translateY(100%)，下一幀再啟動滑動
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          setAnimating(true)
+          setTimeout(() => { setPrev(null); setAnimating(false) }, 450)
+        })
+      })
     }, 900)
     doneRef.current = setTimeout(() => { onDone() }, duration)
     return () => {
@@ -137,7 +146,7 @@ function LoadingPage({
           <FeedCard card={cards[prev]} isEgg={isEgg} />
         </div>
       )}
-      <div style={{ position: 'absolute', inset: 0, transition: prev !== null ? 'transform 0.42s cubic-bezier(0.4,0,0.2,1)' : 'none', transform: prev !== null && !animating ? 'translateY(100%)' : 'translateY(0%)' }}>
+      <div style={{ position: 'absolute', inset: 0, transition: animating ? 'transform 0.42s cubic-bezier(0.4,0,0.2,1)' : 'none', transform: animating ? 'translateY(0%)' : 'translateY(100%)' }}>
         <FeedCard card={cards[cardIdx]} isEgg={isEgg} />
       </div>
     </div>
