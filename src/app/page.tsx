@@ -370,7 +370,7 @@ export default function Home() {
         </div>
 
         {/* ── 彩蛋頁 ── */}
-        <div className="page page-egg" style={{ transform: step === 9 ? 'translateY(0%)' : 'translateY(100%)' }}>
+        <div className="page page-egg" style={{ transform: 'translateY(0%)', opacity: step === 9 ? 1 : 0, pointerEvents: step === 9 ? 'auto' : 'none', transition: 'none' }}>
           {step === 9 && (
             <>
               <div className="egg-bg" style={{ backgroundImage: 'url(/bg_egg.png)' }} />
