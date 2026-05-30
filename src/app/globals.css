@@ -1,0 +1,302 @@
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+  width: 100%;
+  height: 100%;
+  font-family: sans-serif;
+  background: #0a0a0a;
+  overflow: hidden;
+}
+
+/* ── 手機：全屏 ── */
+#app-root {
+  position: relative;
+  width: 100%;
+  height: 100dvh;
+  overflow: hidden;
+  background: #000;
+}
+
+/* ── 桌機：置中手機框 ── */
+@media (min-width: 600px) {
+  body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    overflow: auto;
+    padding: 32px 0;
+  }
+  #app-root {
+    width: 400px;
+    height: 820px;
+    border-radius: 40px;
+    border: 6px solid #2a2a2a;
+    box-shadow: 0 0 80px rgba(0,0,0,0.8), 0 0 0 1px #333;
+    flex-shrink: 0;
+  }
+}
+
+@media (min-width: 1024px) {
+  #app-root { width: 420px; height: 860px; }
+}
+
+/* ── Screen & Pages ── */
+.screen { position: relative; width: 100%; height: 100%; overflow: hidden; }
+
+.page {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  transition: transform 0.45s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex; flex-direction: column; color: #fff;
+}
+
+/* ── TikTok UI ── */
+.tk-top {
+  display: flex; justify-content: center; gap: 20px;
+  font-size: 13px; font-weight: 700; letter-spacing: 1px;
+  padding: 18px 0 10px; flex-shrink: 0;
+  position: relative; z-index: 2;
+}
+.tk-top .on { border-bottom: 2px solid #fe2c55; padding-bottom: 3px; }
+
+.tk-side {
+  position: absolute; right: 10px; bottom: 110px;
+  display: flex; flex-direction: column; align-items: center; gap: 18px; z-index: 2;
+}
+.tk-side-btn { display: flex; flex-direction: column; align-items: center; color: #fff; font-size: 11px; gap: 3px; }
+
+.tk-bottom {
+  position: absolute; bottom: 0; left: 0; right: 0;
+  padding: 12px 16px 28px;
+  background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, transparent 100%);
+  z-index: 2;
+}
+.tk-handle { font-size: 13px; font-weight: 800; margin-bottom: 4px; }
+.tk-desc { font-size: 12px; color: rgba(255,255,255,0.85); line-height: 1.5; margin-bottom: 8px; }
+.tk-tags { font-size: 11px; color: #60a5fa; }
+
+.tk-content {
+  position: relative; z-index: 1; flex: 1;
+  display: flex; flex-direction: column; justify-content: center; align-items: center;
+  padding: 60px 24px 150px;
+}
+
+/* ── Backgrounds ── */
+.page-bg {
+  position: absolute; inset: 0; z-index: 0;
+  background-size: cover; background-position: center;
+}
+.page-bg-overlay {
+  position: absolute; inset: 0; z-index: 1;
+  background: linear-gradient(to bottom, rgba(0,0,0,0.25) 0%, rgba(0,0,0,0.55) 100%);
+}
+.quiz-bg-overlay {
+  position: absolute; inset: 0; z-index: 1;
+  background: linear-gradient(to bottom, rgba(0,0,0,0.35) 0%, rgba(0,0,0,0.65) 100%);
+}
+
+/* ── 首頁 ── */
+.page-home { background: #111; }
+.home-visual {
+  display: flex; flex-direction: column; align-items: center; gap: 18px;
+  text-align: center; position: relative; z-index: 3;
+}
+.home-badge {
+  background: #facc15; color: #000; font-size: 22px; font-weight: 900;
+  padding: 12px 20px; border-radius: 14px; transform: rotate(-2deg); display: inline-block;
+}
+.home-title {
+  font-size: 18px; font-weight: 700; color: #fff; line-height: 1.5;
+  max-width: 260px; text-shadow: 0 2px 8px rgba(0,0,0,0.7);
+}
+.btn-enter {
+  display: block; width: 220px; background: #fe2c55; color: #fff;
+  font-size: 15px; font-weight: 900; border: none; border-radius: 999px;
+  padding: 14px; cursor: pointer; letter-spacing: 2px; margin-top: 8px;
+  transition: opacity 0.15s;
+}
+.btn-enter:active { opacity: 0.8; transform: scale(0.97); }
+
+/* ── 香蕉彩蛋 ── */
+.banana-layer { position: absolute; inset: 0; z-index: 20; pointer-events: none; }
+.banana-sprite {
+  position: absolute; font-size: 26px; cursor: pointer;
+  pointer-events: all; user-select: none; line-height: 1;
+}
+.banana-sprite:active { transform: scale(0.75); }
+
+@keyframes bananaDrop {
+  0%   { transform: translateY(0) rotate(0deg); opacity: 1; }
+  100% { transform: translateY(600px) rotate(720deg); opacity: 0; }
+}
+.banana-dropping { animation: bananaDrop 0.55s ease-in forwards; pointer-events: none; }
+
+/* ── 問題頁 ── */
+.quiz-visual {
+  width: 100%; display: flex; flex-direction: column;
+  align-items: flex-start; gap: 12px; padding: 0 4px; position: relative; z-index: 3;
+}
+.quiz-tag {
+  background: #000; color: #facc15; font-size: 11px;
+  padding: 3px 9px; border-radius: 4px; font-weight: 800;
+  letter-spacing: 1px; display: inline-block;
+}
+.quiz-title { font-size: 16px; font-weight: 900; line-height: 1.5; color: #fff; text-shadow: 0 1px 6px rgba(0,0,0,0.8); }
+.quiz-opts { display: flex; flex-direction: column; gap: 8px; width: 100%; margin-top: 8px; }
+.opt-btn {
+  width: 100%; text-align: left;
+  background: #ffffff; color: #000000;
+  font-weight: 700; font-size: 13px; padding: 11px 14px;
+  border: 3px solid #000; border-radius: 12px;
+  box-shadow: 3px 3px 0 rgba(0,0,0,0.5);
+  cursor: pointer; line-height: 1.4;
+  transition: transform 0.1s, box-shadow 0.1s;
+}
+.opt-btn:active { transform: translate(2px,2px); box-shadow: 1px 1px 0 rgba(0,0,0,0.3); }
+
+/* ── 加載頁 ── */
+.page-loading, .page-egg-loading { background: #000; overflow: hidden; position: relative; }
+.feed-viewport { position: absolute; inset: 0; overflow: hidden; }
+.feed-card { position: absolute; inset: 0; width: 100%; height: 100%; }
+.feed-card-bg { position: absolute; inset: 0; z-index: 0; background-size: cover; background-position: center; }
+.feed-card-overlay {
+  position: absolute; inset: 0; z-index: 1;
+  background: linear-gradient(to bottom, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.6) 100%);
+}
+.feed-ui { position: absolute; inset: 0; z-index: 2; }
+.feed-ui-top {
+  display: flex; justify-content: center; gap: 20px;
+  font-size: 13px; font-weight: 700; letter-spacing: 1px;
+  padding: 18px 0 10px; color: #fff;
+}
+.feed-ui-top .on { border-bottom: 2px solid #fe2c55; padding-bottom: 3px; }
+.feed-ui-side {
+  position: absolute; right: 10px; bottom: 110px;
+  display: flex; flex-direction: column; align-items: center; gap: 18px;
+}
+.feed-ui-side-btn { display: flex; flex-direction: column; align-items: center; color: #fff; font-size: 11px; gap: 3px; }
+.feed-ui-bottom {
+  position: absolute; bottom: 0; left: 0; right: 0;
+  padding: 12px 16px 52px;
+  background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, transparent 100%);
+}
+.feed-ui-swipe {
+  position: absolute; bottom: 16px; left: 50%; transform: translateX(-50%);
+  display: flex; flex-direction: column; align-items: center; gap: 3px;
+  color: rgba(255,255,255,0.5); font-size: 11px;
+  animation: bounceUp 1s ease-in-out infinite;
+}
+@keyframes bounceUp {
+  0%, 100% { transform: translateX(-50%) translateY(0); }
+  50%       { transform: translateX(-50%) translateY(-5px); }
+}
+
+/* ── 結果頁 ── */
+.page-result { background: #0a0a0f; overflow: hidden; }
+.result-bg {
+  position: absolute; inset: 0; z-index: 0;
+  background-size: cover; background-position: top center;
+  filter: blur(6px) brightness(0.4); transform: scale(1.06);
+}
+.result-visual {
+  display: flex; flex-direction: column; align-items: center;
+  gap: 10px; text-align: center; position: relative; z-index: 3;
+}
+.result-img-box {
+  width: 200px; height: 200px; border-radius: 20px; overflow: hidden;
+  flex-shrink: 0; margin-top: 4px;
+  border: 3px solid rgba(255,255,255,0.2); box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+}
+.result-img-box img { width: 100%; height: 100%; object-fit: cover; }
+.result-eyebrow { font-size: 10px; color: #fe2c55; font-weight: 800; letter-spacing: 3px; margin-top: 4px; }
+.result-name { font-size: 28px; font-weight: 900; color: #facc15; letter-spacing: 1px; }
+.result-desc { font-size: 12px; color: rgba(255,255,255,0.85); line-height: 1.7; max-width: 260px; margin-top: 2px; }
+.btn-replay {
+  display: block; width: 220px; background: #fff; color: #000;
+  font-size: 14px; font-weight: 900; border: 3px solid #000;
+  border-radius: 14px; padding: 13px; cursor: pointer; letter-spacing: 2px; margin-top: 10px;
+}
+.btn-replay:active { opacity: 0.85; transform: scale(0.97); }
+
+/* ── 彩蛋頁 ── */
+.page-egg { overflow: hidden; }
+
+.egg-bg {
+  position: absolute; inset: 0; z-index: 0;
+  background-size: cover; background-position: center;
+  animation: eggBgReveal 2s ease-out forwards;
+}
+@keyframes eggBgReveal {
+  0%   { opacity: 0; filter: brightness(0) saturate(0); }
+  30%  { opacity: 0.6; filter: brightness(0.4) saturate(0.5) sepia(0.8); }
+  60%  { opacity: 0.85; filter: brightness(0.7) saturate(1.2) sepia(0.6); }
+  100% { opacity: 1; filter: brightness(1) saturate(1.3) sepia(0.2); }
+}
+
+.egg-bg-overlay {
+  position: absolute; inset: 0; z-index: 1;
+  background: linear-gradient(to bottom, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.65) 100%);
+  animation: fadeIn 2s ease-out forwards; opacity: 0;
+}
+@keyframes fadeIn { 0% { opacity: 0; } 100% { opacity: 1; } }
+
+.egg-goldflare {
+  position: absolute; inset: 0; z-index: 2; pointer-events: none;
+  background: linear-gradient(115deg, transparent 30%, rgba(255,220,50,0.55) 50%, transparent 70%);
+  background-size: 200% 100%;
+  animation: eggFlare 1.8s ease-in-out forwards; opacity: 0;
+}
+@keyframes eggFlare {
+  0%   { opacity: 0; background-position: 200% 0; }
+  20%  { opacity: 1; }
+  80%  { opacity: 0.6; background-position: -80% 0; }
+  100% { opacity: 0; background-position: -200% 0; }
+}
+
+.egg-content-wrap {
+  position: relative; z-index: 3; flex: 1;
+  display: flex; flex-direction: column; justify-content: center; align-items: center;
+  padding: 60px 24px 160px;
+  opacity: 0; transform: translateY(24px);
+  animation: slideUp 0.8s ease-out 1.8s forwards;
+}
+@keyframes slideUp {
+  0%   { opacity: 0; transform: translateY(24px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+.egg-ui-delay { opacity: 0; animation: slideUp 0.6s ease-out 2.2s forwards; }
+
+.egg-content { display: flex; flex-direction: column; align-items: center; gap: 12px; text-align: center; }
+.egg-crown { font-size: 52px; animation: floatUp 2s ease-in-out infinite; }
+@keyframes floatUp { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+
+.egg-name {
+  font-size: 30px; font-weight: 900; color: #facc15; line-height: 1.2;
+  animation: goldShine 2s ease-in-out infinite;
+}
+@keyframes goldShine {
+  0%, 100% { text-shadow: 0 0 10px #facc15, 0 0 20px #facc15; }
+  50%       { text-shadow: 0 0 20px #fff, 0 0 40px #facc15, 0 0 60px #f59e0b; }
+}
+
+.egg-badge {
+  background: #facc15; color: #000; font-size: 11px; font-weight: 900;
+  padding: 6px 16px; border-radius: 999px; letter-spacing: 1px;
+}
+
+.egg-star {
+  position: absolute; font-size: 16px; z-index: 4;
+  animation: starPop 0.5s ease forwards;
+}
+@keyframes starPop {
+  0%   { opacity: 0; transform: scale(0); }
+  60%  { opacity: 1; transform: scale(1.2); }
+  100% { opacity: 1; transform: scale(1); }
+}
+
+.btn-egg-home {
+  display: block; width: 220px; background: #facc15; color: #000;
+  font-size: 14px; font-weight: 900; border: none; border-radius: 14px;
+  padding: 13px; cursor: pointer; letter-spacing: 2px; margin-top: 14px;
+}
