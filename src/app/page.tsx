@@ -78,7 +78,7 @@ function TkBottomBar({ handle, desc, tags, handleColor = '#fff' }: { handle: str
 function FeedCard({ card, isEgg }: { card: typeof FEED_CARDS[0]; isEgg: boolean }) {
   return (
     <div className="feed-card">
-      <div className="feed-card-bg" style={{ backgroundImage: `url(/${card.bgKey}.png)` }} />
+      <div className="feed-card-bg" style={{ backgroundImage: `url(/bg_${card.bgKey}.png)` }} />
       <div className="feed-card-overlay" />
       <div className="feed-ui">
         <div className="feed-ui-top">
