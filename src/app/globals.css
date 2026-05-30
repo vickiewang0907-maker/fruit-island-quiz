@@ -171,7 +171,7 @@ html, body {
 /* ── 加載頁 ── */
 .page-loading, .page-egg-loading { background: #000; overflow: hidden; position: relative; }
 .feed-viewport { position: absolute; inset: 0; overflow: hidden; }
-.feed-card { position: absolute; inset: 0; width: 100%; height: 100%; }
+.feed-card { position: absolute; inset: 0; width: 100%; height: 100%; background: #1a0f00; }
 .feed-card-bg { position: absolute; inset: 0; z-index: 0; background-size: cover; background-position: center; }
 .feed-card-overlay {
   position: absolute; inset: 0; z-index: 1;

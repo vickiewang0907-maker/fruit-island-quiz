@@ -280,6 +280,9 @@ export default function Home() {
 
   return (
     <div id="app-root">
+      {/* 預載彩蛋圖片，讓使用者點完香蕉時圖片已在快取 */}
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img src="/bg_egg.png" alt="" style={{ position: 'absolute', width: 0, height: 0, opacity: 0, pointerEvents: 'none' }} />
       <div className="screen">
 
         {/* ── 首頁 ── */}
